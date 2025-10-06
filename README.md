@@ -35,50 +35,101 @@ Publish the website in the given URL.
 ```
 math.html
 
-<!DOCTYPE html>
 <html>
-<head>
-    <title>BMI Calculator</title>
-</head>
-<body bgcolor="cyan">
-    <center>
-        <h1>BMI Calculator</h1>
-        <form method="POST">
-            {% csrf_token %}
-            <label>Height (m):</label><br>
-            <input type="text" name="height"><br><br>
-            <label>Weight (kg):</label><br>
-            <input type="text" name="weight"><br><br>
-            <button type="submit">Calculate</button>
+    <head>
+        <title>BMI Calculator</title>
+        <style>
+        body{
+          background-color: rgba(204, 192, 197, 0.745);
+          border-top: 10;
+        }
+        .m{
+          background-color: rgb(190, 222, 231);
+          border-style: inset;
+          margin-top: 150px;
+          margin-left: 500px;
+          margin-right: 500px;
+          
+        }
+        *{
+          color: rgb(231, 93, 93);
+        }
+            .main{
+                font-size: 250%;
+                text-align: center;
+                text-decoration:underline;
+
+                background-color: rgba(173, 73, 119, 0.779);
+                 margin-left: 50px;
+                  margin-right: 50px;
+                  padding: 50px;
+                  
+                  
+            }
+            .a{
+                font-size: 150%;
+                text-align: center;
+                background-color: rgba(221, 225, 226, 0.779);
+                 margin-left: 50px;
+                  margin-right: 50px;
+                
+                 
+            }
+            form{
+              text-align: center;
+              background-color: rgba(144, 221, 141, 0.779);
+               margin-left: 50px;
+             margin-right: 50px;
+             padding: 50px;
+            }
+           
+        </style>
+    </head>
+    <body>
+
+       <div class="m">
+        <div class="main" style="color: rgb(59, 198, 73);">BMI Calculator</div>
+        <div class="a">
+      <h3> P SANTHI-25004254</h3></div>
+        <form method="post">
+          {% csrf_token %}
+           
+           
+            <label>Weight(kg)=</label>
+            <input type="text" name="weight" value="{{w}}"><br><br>
+             <label>Height(cm)=</label>
+            <input type="text" name="height" value="{{h}}"><br><br>
+            <button type="submit">Calculate</button><br><br>
+            <label>BMI=</label>
+            <input type="text" name="bmi" value="{{bmi}}">
+        </div>
         </form>
-
         
-
-        {% if BMI %}
-            <h2>Your BMI is: {{ BMI }}</h2>
-        {% endif %}
-    </center>
-</body>
+        
+    </body>
 </html>
 
 views.py
 
 from django.shortcuts import render
-
 def calculate_bmi(request):
-    bmi = None   # Default value
-
-    if request.method == "POST":
-        height = float(request.POST.get("height"))
-        weight = float(request.POST.get("weight"))
-        bmi = weight / (height * height)
-
-        # Print to server console for debugging
-        print("Height:", height)
-        print("Weight:", weight)
-        print("BMI calculated:", bmi)
-
-    return render(request, "myapp/math.html",{"BMI":bmi})
+    context={}
+    context['bmi']="0"
+    context['w']="0"
+    context['h']="0"
+    if(request.method=='POST'):
+       w= float(request.POST.get('weight','0'))
+       h=float(request.POST.get('height','0'))
+       print('request=',request)
+       
+       print('Weight=',w)
+       print('Height=',h)
+       bmi=w/((h/100)**2)
+       context['bmi']=bmi
+       context['w']=w
+       context['h']=h
+       print('BMI=',bmi)
+    return render(request,'myapp/math.html',context)
 
 urls.py
 
@@ -88,15 +139,16 @@ from myapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.calculate_bmi, name='calculate_bmi'),
+    path('bmi/',views.calculate_bmi,name="bmi"),
+    path('',views.calculate_bmi,name="bmicalculator")
 ]
 ```
 
 ## SERVER SIDE PROCESSING:
-![alt text](<Screenshot (30).png>)
+![alt text](<Screenshot (31).png>)
 
 ## HOMEPAGE:
-![alt text](<Screenshot (29).png>)
+![alt text](<Screenshot (32).png>)
 
 ## RESULT:
 The program for performing server side processing is completed successfully.
